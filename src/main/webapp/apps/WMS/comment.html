@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACB-評論管理</title>
+
+
+    
+    <link rel="stylesheet" href="/apps/menu/styles/navAndBg.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <!-- datatable連結  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    <!-- css RWD連結 -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="/apps/WMS/css/datatable.css">
+    <link rel="stylesheet" href=\apps\WMS\css\barli.css>
+    <link rel="stylesheet" href=\apps\WMS\css\product_style.css>
+
+</head>
+
+<body>
+
+    <!-- 主頁進入畫面 -->
+    <!-- 管理頁籤 -->
+    <div class="all">
+        <!-- 左邊 -->
+        <div class="container-left">
+
+            <!-- 左邊結束 -->
+        </div>
+        <!-- 右邊 -->
+        <div style="background-color: rgba(233, 226, 226, 0.9);width: 100%;  margin-right: 0.5vh; margin-left: 0.5vh;   border-radius: 15px;"
+            class="">
+            <!-- 標題 -->
+            <div class="pageout">
+                <div class="page">評論管理</div>
+            </div>
+
+            <table id="table_id" class="display responsive nowrap" style="width:100%">
+                <thead class="" style=>
+                    <!-- 欄位標題 -->
+                    <tr>
+                        <th>留言編號</th>
+                        <th>會員編號</th>
+                        <th>菜單編號</th>
+                        <th>上傳日期</th>
+                        <th>更改日期</th>
+                        <th>評分</th>
+                        <th>留言內容</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="productList" id="">
+                    <!-- 欄位內容 -->
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+    </div>
+
+
+
+
+    <!-- js RWD -->
+    <script src="/apps/js/jquery-3.6.1.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+    <script src="/apps/menu/js/navAndBg.js"></script>
+    <script src="/apps/WMS/js/back_bar.js"></script>
+
+
+
+
+    <script>
+
+$('.cm').css('background-color', '#adadad')
+        // datetable
+        $(document).ready(function () {
+
+            $('#table_id').DataTable({
+
+                "ajax": '/comment/findAllcomment', //抓api url
+                "columns": [
+                    { data: 'com_id', title: "留言編號" },
+                    { data: 'm_id', title: "會員編號", },
+                    { data: 'p_id', title: "菜單編號" },
+                    { data: 'createDate', title: "上傳日期" },
+                    { data: 'updateDate', title: "更改日期" },
+                    { data: 'score', title: "評分" },
+                    
+                    
+//                     { data: 'comment', title: '留言內容' },
+                      {
+                        data: null, title: "留言內容",
+                        className:"m-auto",
+                        render: function (data, type, row) {
+                            return '<div class="text-center" style="white-space: normal !important; width:100%">'+row.comment+'</div> '
+                        },
+                    },
+                    
+                    
+                    {
+                        data: null, title: "",
+                        render: function (data, type, row) {
+                            return '<button class="delete btn btn-secondary btn-xs" Id="' + row.com_id + '">刪除</button> '
+                        },
+                    },
+                ],
+                columnDefs: [
+                    {
+                        orderable: false,
+                        targets: [7],
+                        
+                    },
+                    {
+                   
+                        targets: [6],
+                        
+                    },  
+                ],
+                //搜尋功能
+                "searching": true,
+                //每頁幾筆
+                "lengthMenu": [10, 15, 20],
+                language: {
+                         url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/zh-HANT.json",
+                          },
+
+
+            });
+
+
+        });
+
+        // 初始化刪除按钮  
+        $('#table_id tbody').on('click', 'button.delete', function (e) {
+            e.preventDefault();
+
+            if (confirm("確定要刪除該筆評論資料?")) {
+                let com_id = $(this).attr("id");
+                $.ajax({
+                    url: '/bak/comment/delete/' + com_id,
+                    contentType: 'application/json; chartset=UTF-8',  // 送過去的格式
+                    method: 'get',
+                    success: function (result) {
+                        alert(result);
+                        window.location.reload();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            }
+
+        });
+
+
+
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>
